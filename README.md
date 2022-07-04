@@ -41,17 +41,42 @@ Usually, simple project should only have 1 bucket with the following structure:
 bucket/userA/file1.jpg  
 bucket/userB/abc.txt  
 
-You should enable ACL to make individual object private or public. (storage library for nodejs requires this) 
-You should allow only the service account to access to buckets and objects. Other end-user accounts should not present in the access list of any buckets.
+You should enable ACL to make individual object private or public. (storage library for nodejs requires this)   
+You should allow only the service account to access to buckets and objects. Other end-user accounts should not present in the access list of any buckets.  
 Doing so to minimize the potential of leaking data because of mis-config your buckets, objects.
 
-???...
+When user want to download/upload file, the ApiServer generate a Signed Url. client will use this url to download/upload file.
+The signed url has time expiration. ApiServer can require the client to provide exact some custom headers when client uses signed url. (usually this is not neccessary)
+
+Client (web, mobile, desktop) should use XML Rest Api to download/upload file.
+Server (nodejs) should use Nodejs GCStorage client library to manage buckets and files.
 
 ## list files
+client sends request to ApiServer.
+apiserver interacts with GCStorage to get client's files and return client list of files.
 
 ## delete file
+client sends request to ApiServer.
+apiserver interacts with GCStorage to delete client's file.
 
 ## download file
+client request to download a certain file.
+apiServer generate a Signed Url for downloading that file and return that signed url to client.
+client uses signed url to start download file.
+
+Note: 
+in case of native clients (mobile, desktop), client has to use XML Rest Api to download file. client should 'GET' the 'signed url' and receive response's data partially in body. Each time data comes, client write those data to local file. repeat until response complete. (only 1 request and 1 response)
+
+In case of web browser, client just needs to open that signed url in a new tab, the browser will prompt the SaveDialog to user to save file to and handle download process for you.
 
 ## upload file
+client request to upload a certain file.
+apiServer generate a Signed Url for uploading that file and return that signed url to client. This should be the 'resumable upload'.
+client uses signed url to start uploading file.
+The 'resumable upload' is recommended. In summary, the client will has to init a POST request to get destination URL. then client will PUT data partially to that destinationURL. Repeat until GCStorage responds OK. (1 POST request, multiple PUT requests).
+
+Both native client and web client should use this method. (GCStorage not recommend the Multipart-form-data method).
+Navive client will involve reading data from file (eg: c++, FILE or iostream) and send/receive HTTP requests (eg: c++, cpp-httplib).
+Web client will involve reading data from file (file input tag and File.slide() method) and send/receive HTTP requests (XMLHttpRequest).
+
 
