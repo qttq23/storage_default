@@ -123,8 +123,9 @@ client uses signed url to start uploading file.
 The `resumable upload` is recommended. In summary, the client will has to init a `POST` request to get destination URL. then client will `PUT` data partially to that destinationURL. Repeat `PUT` until GCStorage responds `OK`. (1 POST request, multiple PUT requests).
 
 Both native client and web client should use this method. (GCStorage not recommend the `Multipart-form-data` method).  
-Navive client will involve reading data from file (eg: c++, FILE or iostream) and send/receive HTTP requests (eg: c++, cpp-httplib).  
-Web client will involve reading data from file (file input tag and File.slide() method) and send/receive HTTP requests (XMLHttpRequest).  
+`Navive client` will involve reading data from file (eg: c++, FILE or iostream) and send/receive HTTP requests (eg: c++, cpp-httplib).  
+`Web client` will involve reading data from file (file input tag and File.slide() method) and send/receive HTTP requests (XMLHttpRequest).  
+(looks like the 'input file' only contains file information not the file content. so don't worry when select large files. file's content can be get using 'File.arrayBuffer()')
 
 (
 note: the `action` param should be 'resumable':  
