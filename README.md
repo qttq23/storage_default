@@ -89,7 +89,7 @@ https://googleapis.dev/nodejs/storage/latest/File.html#getSignedUrl
 
 ## list files
 client sends request to ApiServer.  
-apiserver interacts with GCStorage to get client's files and return client list of files.   
+apiserver interacts with GCStorage to get client's files and return client list of files. (may contain the file's metadata)  
 (https://googleapis.dev/nodejs/storage/latest/Bucket.html#getFiles)
 
 ## delete file
@@ -103,7 +103,8 @@ apiServer generate a `Signed Url` for downloading that file and return that sign
 client uses signed url to start download file.  
 
 Note:   
-in case of native clients (mobile, desktop), client has to use `XML Rest Api` to download file. client should `GET` the `signed url` and receive response's data partially in body. Each time data comes, client write those data to local file. repeat until response complete. (only 1 request and 1 response)
+in case of native clients (mobile, desktop), client has to use `XML Rest Api` to download file. client should `GET` the `signed url` and receive response's data partially in body. Each time data comes, client write those data to local file. repeat until response complete. (only 1 request and 1 response)  
+(optionally, client requests a `HEAD` to get the file's metadata.)  
 
 In case of web browser, client just needs to open that `signed url` in a new tab, the browser will prompt the SaveDialog to user to save file to and handle download process for you.
 
