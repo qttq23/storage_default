@@ -1,6 +1,8 @@
 this includes:
-- 
-
+- [Google Cloud Storage (recommended)](#google-cloud-storage-recommended)
+- [Access control with IAM vs ACL](#access-control-with-iam-vs-acl)
+- [Firebase Storage (not recommended)](#firebase-storage-not-recommended)
+- [best practices](#best-practices)
 
 # Google Cloud Storage (recommended)
 - used to store static files such as images, videos, zip.
@@ -30,7 +32,7 @@ rest API:
 https://cloud.google.com/storage/docs/xml-api/get-object
 )
 
-# authentication with IAM vs ACL
+# Access control with IAM vs ACL
 - `IAM` is a system to manage user/account permission to access Google Cloud API/resources.
 - `IAM` contains a list of pairs `<principle, role>`. `Principle` is a google user-account or a service account. `Role` is a set of permissions.
 - Google Cloud Storage uses IAM to give client access to objects. It inherits entries from IAM and it can add more entries for its own.
