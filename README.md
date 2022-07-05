@@ -120,9 +120,9 @@ Navive client will involve reading data from file (eg: c++, FILE or iostream) an
 Web client will involve reading data from file (file input tag and File.slide() method) and send/receive HTTP requests (XMLHttpRequest).  
 
 (
-note: the `action` param should be 'resumable':
-https://cloud.google.com/storage/docs/access-control/signing-urls-with-helpers#upload-object
+note: the `action` param should be 'resumable':  
+https://cloud.google.com/storage/docs/access-control/signing-urls-with-helpers#upload-object  
 
-https://cloud.google.com/storage/docs/xml-api/post-object-resumable
-https://cloud.google.com/storage/docs/xml-api/put-object-upload
+https://cloud.google.com/storage/docs/xml-api/post-object-resumable  
+https://cloud.google.com/storage/docs/xml-api/put-object-upload  
 )
