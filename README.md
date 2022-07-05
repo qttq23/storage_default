@@ -1,11 +1,11 @@
 this includes:
-- [Google Cloud Storage (recommended)](#google-cloud-storage-recommended)
-- [Access control with IAM vs ACL](#access-control-with-iam-vs-acl)
-- [Firebase Storage (not recommended)](#firebase-storage-not-recommended)
-- [best practices](#best-practices)
-- [other strategies](#other-strategies)
+- [1. Google Cloud Storage (recommended)](#1-google-cloud-storage-recommended)
+- [2. Access control with IAM vs ACL](#2-access-control-with-iam-vs-acl)
+- [3. Firebase Storage (not recommended)](#3-firebase-storage-not-recommended)
+- [4. best practices](#4-best-practices)
+- [5. other strategies](#5-other-strategies)
 
-# Google Cloud Storage (recommended)
+# 1. Google Cloud Storage (recommended)
 - used to store static files such as images, videos, zip.
 - each project has 1 or more `buckets`. Each bucket has 1 or more `objects` (files). Each file has the binary data and the `metadata` (such as Content-Type, Content-Disposition).
 
@@ -33,7 +33,7 @@ rest API:
 https://cloud.google.com/storage/docs/xml-api/get-object
 )
 
-# Access control with IAM vs ACL
+# 2. Access control with IAM vs ACL
 - `IAM` is a system to manage user/account permission to access Google Cloud API/resources.
 - `IAM` contains a list of pairs `<principle, role>`. `Principle` is a google user-account or a service account. `Role` is a set of permissions.
 - Google Cloud Storage uses IAM to give client access to objects. It inherits entries from IAM and it can add more entries for its own.
@@ -53,7 +53,7 @@ make file private:
 https://googleapis.dev/nodejs/storage/latest/File.html#makePrivate
 )
 
-# Firebase Storage (not recommended)
+# 3. Firebase Storage (not recommended)
 - is a subset of Google Cloud Storage. It also uses GCStorage to create and manage buckets too.
 - Can be used in conjunction with `Firebase Authentication`. Once client is authenticated by Firebase Auth, Firebase Storage can use `Rules` to detect who client is and furthermore look at client's `custom claims` to know the client's permission such as admin or normal user. this means you don't need additonal ApiServer to authenticate the requests to objects.
 
@@ -65,7 +65,7 @@ why not recommended?
 
 (https://firebase.google.com/docs/storage)
 
-# best practices:
+# 4. best practices:
 
 Usually, simple project should only have 1 `bucket` with the following structure:  
 bucket/userA/file1.jpg  
@@ -136,7 +136,7 @@ https://cloud.google.com/storage/docs/xml-api/post-object-resumable
 https://cloud.google.com/storage/docs/xml-api/put-object-upload  
 )
 
-# other strategies:
+# 5. other strategies:
 ## signed urls (as describe in `best practice`)
 - api server (nodejs) holds the Service Account and generates Signed Url which is short-lived and secured url. (accessing SignedUrls requires some headers)
 - client (desktop, web,..) requests to api server to get signedUrl for Upload/Download/Delete an object in GC storage.
