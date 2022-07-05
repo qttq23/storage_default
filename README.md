@@ -108,6 +108,9 @@ In case of web browser, client just needs to open that `signed url` in a new tab
 
 (
 https://cloud.google.com/storage/docs/access-control/signing-urls-with-helpers#download-object
+
+overview:
+https://cloud.google.com/storage/docs/downloading-objects#download-object-xml
 https://cloud.google.com/storage/docs/xml-api/get-object-download
 )
 
@@ -124,6 +127,9 @@ Web client will involve reading data from file (file input tag and File.slide() 
 (
 note: the `action` param should be 'resumable':  
 https://cloud.google.com/storage/docs/access-control/signing-urls-with-helpers#upload-object  
+
+overview:
+https://cloud.google.com/storage/docs/performing-resumable-uploads#chunked-upload
 
 https://cloud.google.com/storage/docs/xml-api/post-object-resumable  
 https://cloud.google.com/storage/docs/xml-api/put-object-upload  
