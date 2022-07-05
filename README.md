@@ -43,10 +43,10 @@ In practise, you should enable `ACL` to use both of `IAM and ACL`. for IAM, you 
 Luckily, the Nodejs client library handles these ACL tasks to make your files public or private. (it requires ACL to be enabled first)
 
 (
-https://cloud.google.com/storage/docs/access-control/iam
-https://cloud.google.com/storage/docs/access-control/lists
+https://cloud.google.com/storage/docs/access-control/iam  
+https://cloud.google.com/storage/docs/access-control/lists  
 
-make file private:
+make file private:  
 https://googleapis.dev/nodejs/storage/latest/File.html#makePrivate
 )
 
@@ -85,21 +85,21 @@ https://googleapis.dev/nodejs/storage/latest/File.html#getSignedUrl
 )
 
 ## list files
-client sends request to ApiServer.
-apiserver interacts with GCStorage to get client's files and return client list of files.  
+client sends request to ApiServer.  
+apiserver interacts with GCStorage to get client's files and return client list of files.   
 (https://googleapis.dev/nodejs/storage/latest/Bucket.html#getFiles)
 
 ## delete file
-client sends request to ApiServer.
-apiserver interacts with GCStorage to delete client's file.  
+client sends request to ApiServer.  
+apiserver interacts with GCStorage to delete client's file.    
 (https://googleapis.dev/nodejs/storage/latest/File.html#delete)
 
 ## download file
-client requests to download a certain file.
-apiServer generate a `Signed Url` for downloading that file and return that signed url to client.
-client uses signed url to start download file.
+client requests to download a certain file.  
+apiServer generate a `Signed Url` for downloading that file and return that signed url to client.  
+client uses signed url to start download file.  
 
-Note: 
+Note:   
 in case of native clients (mobile, desktop), client has to use `XML Rest Api` to download file. client should `GET` the `signed url` and receive response's data partially in body. Each time data comes, client write those data to local file. repeat until response complete. (only 1 request and 1 response)
 
 In case of web browser, client just needs to open that `signed url` in a new tab, the browser will prompt the SaveDialog to user to save file to and handle download process for you.
@@ -110,14 +110,14 @@ https://cloud.google.com/storage/docs/xml-api/get-object-download
 )
 
 ## upload file
-client request to upload a certain file.
-apiServer generate a `Signed Url` for uploading that file and return that signed url to client. This should be the `resumable upload`.
-client uses signed url to start uploading file.
+client request to upload a certain file.  
+apiServer generate a `Signed Url` for uploading that file and return that signed url to client. This should be the `resumable upload`.  
+client uses signed url to start uploading file.  
 The `resumable upload` is recommended. In summary, the client will has to init a `POST` request to get destination URL. then client will `PUT` data partially to that destinationURL. Repeat `PUT` until GCStorage responds `OK`. (1 POST request, multiple PUT requests).
 
-Both native client and web client should use this method. (GCStorage not recommend the `Multipart-form-data` method).
-Navive client will involve reading data from file (eg: c++, FILE or iostream) and send/receive HTTP requests (eg: c++, cpp-httplib).
-Web client will involve reading data from file (file input tag and File.slide() method) and send/receive HTTP requests (XMLHttpRequest).
+Both native client and web client should use this method. (GCStorage not recommend the `Multipart-form-data` method).  
+Navive client will involve reading data from file (eg: c++, FILE or iostream) and send/receive HTTP requests (eg: c++, cpp-httplib).  
+Web client will involve reading data from file (file input tag and File.slide() method) and send/receive HTTP requests (XMLHttpRequest).  
 
 (
 note: the `action` param should be 'resumable':
