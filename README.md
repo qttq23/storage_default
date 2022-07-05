@@ -3,6 +3,7 @@ this includes:
 - [Access control with IAM vs ACL](#access-control-with-iam-vs-acl)
 - [Firebase Storage (not recommended)](#firebase-storage-not-recommended)
 - [best practices](#best-practices)
+- [other strategies](#other-strategies)
 
 # Google Cloud Storage (recommended)
 - used to store static files such as images, videos, zip.
@@ -134,3 +135,33 @@ https://cloud.google.com/storage/docs/performing-resumable-uploads#chunked-uploa
 https://cloud.google.com/storage/docs/xml-api/post-object-resumable  
 https://cloud.google.com/storage/docs/xml-api/put-object-upload  
 )
+
+# other strategies:
+## signed urls (as describe in `best practice`)
+- api server (nodejs) holds the Service Account and generates Signed Url which is short-lived and secured url. (accessing SignedUrls requires some headers)
+- client (desktop, web,..) requests to api server to get signedUrl for Upload/Download/Delete an object in GC storage.
+
+-> popular method. allow api server controls every actions of users.
+-> drawback: user usually has to make at least 2 requests to download/upload/delete a file. also increase number of tasks to api server.
+-> recommended.
+
+## stream upload/download
+- api server (nodejs) holds the Service Account and forward data from/to user to/from GC strorage.
+- upload: users uploads file to api server and api server forwards (streams) received data to GC storage. api server don't save data to local file.
+- download: api server forwards (streams) received data from GC storage to the response to user. api server don't save data to local file.
+
+-> allow api server controls every actions of users. user only makes 1 request for downloading or uploading.
+-> drawback: very heavy burden to api server. because it has to receive and forward the data that it do not use.
+-> not recommended.
+
+## firebase storage
+- used in conjunction with Firebase Authentication.
+- user needs to signin to Firebase authentication first.
+- sigined user accesses GC storage directly.
+- firebase Storage has Security Rules that can be used to investigate Custom Claims of signed-in user (set by Firebase Authentication).
+
+-> access GC storage directly without backend server.
+-> drawbacks: Firebase only supports Web & Mobile. Impossible for desktop to use Firebase services.
+
+(GC storage also allows authentication from individual google end-user accounts (IAM). but that only works for Google account, not work for Github/Facebook accounts.
+so not recommended)
