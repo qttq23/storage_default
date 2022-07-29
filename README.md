@@ -124,7 +124,7 @@ The `resumable upload` is recommended. In summary, the client will has to init a
 
 Both native client and web client should use this method. (GCStorage not recommend the `Multipart-form-data` method).  
 `Navive client` will involve reading data from file (eg: c++, FILE or iostream) and send/receive HTTP requests (eg: c++, cpp-httplib).  
-`Web client` will involve reading data from file (file input tag and File.slide() method) and send/receive HTTP requests (XMLHttpRequest).  
+`Web client` will involve reading data from file (file input tag and File.slide() method) and send/receive HTTP requests (XMLHttpRequest). remember to config CORS (see below)  
 (looks like the 'input file' only contains file information not the file content. so don't worry when select large files. file's content can be get using 'File.arrayBuffer()')
 
 (
@@ -136,6 +136,14 @@ https://cloud.google.com/storage/docs/performing-resumable-uploads#chunked-uploa
 
 https://cloud.google.com/storage/docs/xml-api/post-object-resumable  
 https://cloud.google.com/storage/docs/xml-api/put-object-upload  
+)
+
+## set CORS
+by default, google cloud storage don't have CORS configured. you have to config manually if you are accessing from web browser.
+(
+https://cloud.google.com/storage/docs/configuring-cors#gsutil_1
+
+sample: view `bucket_cors_config.json` & `set_bucket_cors.bat` files
 )
 
 # 5. other strategies:
