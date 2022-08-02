@@ -146,6 +146,39 @@ https://cloud.google.com/storage/docs/configuring-cors#gsutil_1
 sample: view `bucket_cors_config.json` & `set_bucket_cors.bat` files
 )
 
+## others
+performance consideration: 
+imagine your client app should show 20 images (big thumbnail) each time users open app.
+each time a user opens your app, client app has to request server to sign 20 signed urls.
+this ridiculously wastes your server's time and resources.
+instead, consider generating a long time expired url such as 7 days.
+client requests signed urls once and store them to local storage.
+every time client needs to get signed url, it should first check the local storage.
+if the url is expired, client can detect error (for html img tag: onerror event) and re-request new url from server.
+
+
+fine-grained permission:
+imagine your app has requirements to allow a user to store for file privately and potentially share to their friends.
+everything works just fine: you set share policy to your own file and api server remembers that policy. 
+When your friend requests that file, api server allows and gives your friends signed url to that file.
+but what if later, you want to disallow one of your friends out of your file share policy ?
+your disallowed friend already has signed url that only expired after next 7 days.
+
+according to google storage docs: "Anyone who knows the URL can access the resource until the expiration time for the URL is reached or the key used to sign the URL is rotated."
+this means you has to wait for expiration time for your new policy to take effect.
+or you have to renew your service account, which affects the whole bucket not only your file. so this also not practical.
+(https://cloud.google.com/storage/docs/access-control/signed-urls#should-you-use)
+
+Another workaround is that you change your file's name in google storage.  (I recommended)
+you also have to update storage filename in database (eg: mysql) where you store file's info and permission/policy.
+after setting new storage filename, the disallowed friend cannot use signed url to access to old filename anymore. he also can't request api server to give him a new signed url because api server already remembers your new policy.
+the allowed friends temporarily cannot use old url but they can request api server to give them new signed url.
+
+the only drawback is that nodejs google-storage library cannot actually 'rename' a file, it internally 'copy' then 'delete' old file.
+so if the file you want to rename is large, the action 'rename' will take long to complete.
+(https://googleapis.dev/nodejs/storage/latest/File.html#rename)
+
+
 # 5. other strategies:
 ## signed urls (as describe in `best practice`)
 - api server (nodejs) holds the Service Account and generates Signed Url which is short-lived and secured url. (accessing SignedUrls requires some headers)
