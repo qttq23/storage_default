@@ -117,7 +117,7 @@ https://cloud.google.com/storage/docs/xml-api/get-object-download
 )
 
 ## upload file
-(below is simple upload strategy, not support restrict file size as well as folder size per user. view more at: __Advanced Upload File__)
+(below is simple upload strategy, not support restrict file size as well as folder size per user. view more at: __Advanced Upload File__)  
 client request to upload a certain file.  
 apiServer generate a `Signed Url` for uploading that file and return that signed url to client. This should be the `resumable upload`.  
 client uses signed url to start uploading file.  
