@@ -117,6 +117,7 @@ https://cloud.google.com/storage/docs/xml-api/get-object-download
 )
 
 ## upload file
+(below is simple upload strategy, not support restrict file size as well as folder size per user. view more at: __Advanced Upload File__)
 client request to upload a certain file.  
 apiServer generate a `Signed Url` for uploading that file and return that signed url to client. This should be the `resumable upload`.  
 client uses signed url to start uploading file.  
@@ -147,7 +148,7 @@ sample: view `bucket_cors_config.json` & `set_bucket_cors.bat` files
 )
 
 ## others
-performance consideration:   
+### performance consideration:   
 imagine your client app should show 20 images (big thumbnail) each time users open app.  
 each time a user opens your app, client app has to request server to sign 20 signed urls.  
 this ridiculously wastes your server's time and resources.  
@@ -157,7 +158,7 @@ every time client needs to get signed url, it should first check the local stora
 if the url is expired, client can detect error (for html img tag: onerror event) and re-request new url from server.  
 
 
-fine-grained permission:  
+### fine-grained permission:  
 imagine your app has requirements to allow a user to store for file privately and potentially share to their friends.  
 everything works just fine: you set share policy to your own file and api server remembers that policy.   
 When your friend requests that file, api server allows and gives your friends signed url to that file.  
@@ -176,8 +177,40 @@ the allowed friends temporarily cannot use old url but they can request api serv
 
 the only drawback is that nodejs google-storage library cannot actually 'rename' a file, it internally 'copy' then 'delete' old file.  
 so if the file you want to rename is large, the action 'rename' will take long to complete.  
+(looks like renaming an object in the same bucket and same folder happens pretty fast and no need to copy then delete.
+but that is the internal implementation of GCstorage, no clear documentation for that.
+maybe here: https://googleapis.dev/nodejs/storage/latest/File.html#move)
+
 (https://googleapis.dev/nodejs/storage/latest/File.html#rename)  
 
+### Advanced Upload File
+(view previous __upload file__ for basic understanding)  
+2 problems when upload with signed url is that you can't control maximum file size to be uploaded and further the size of user folder.  
+to limit the size of upload file, you just need to add `x-google-content-length-range` to `extensionHeaders`.  
+(https://cloud.google.com/storage/docs/xml-api/reference-headers#xgoogcontentlengthrange)  
+
+But that is not enough. consider a situation where you want to limit 15GB for each user. you initially set max size for each file is 5GB.  
+But attackers can just get 10 signed urls then upload all those at the same time. the result is 50GB in your storage.  
+
+So solution for controlling user's storage size is to...limit it on your own server instead of providing them signed url.  
+looks like diagram below:  
+  
+User ---> Your server ---> Google Cloud Storage
+
+Your Server may want to store user's storage GB usage in a database such as postgres which support atomic increment or locking.  
+be careful to lock database when checking for user's GB usage because multiple instances in Cloud Run may access database record at the same time.  
+
+If you implement Resumable Upload, consider storing upload session's url to database too.  
+Because your Cloud Run is stateless and the upload process may be handled by different instances.  
+
+
+price:  
+If you deploy Your Server in Google Cloud (such as Cloud Run), you will not be charged for Netwrok Ingress.  
+If Your Server (cloud run) and Google Cloud Storage are in the same region, there is also no cost for Egress/Ingress between Your Server and GCStorage.  
+Now there is only Egress from Your Server to User/Datbase and vCPU + RAM time.  
+Egress from Your Server to User/Database is considerably cheap because Your Server only responds status code to User.  
+vCPU + RAM cost is not really expensive because uploading image, video, file,.. doesnot happen very regularly or if happens, basically fast.  
+ 
 
 # 5. other strategies:
 ## signed urls (as describe in `best practice`)
