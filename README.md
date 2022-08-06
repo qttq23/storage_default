@@ -205,8 +205,10 @@ Because your Cloud Run is stateless and the upload process may be handled by dif
 
 
 price:  
-If you deploy Your Server in Google Cloud (such as Cloud Run), you will not be charged for Netwrok Ingress.  
-If Your Server (cloud run) and Google Cloud Storage are in the same region, there is also no cost for Egress/Ingress between Your Server and GCStorage.  
+If you deploy Your Server in Google Cloud (such as Cloud Run), you will not be charged for Netwrok Ingress. 
+(https://cloud.google.com/vpc/network-pricing#vpc-pricing)    
+If Your Server (cloud run) and Google Cloud Storage are in the same region, there is also no cost for Egress/Ingress between Your Server and GCStorage. 
+(https://cloud.google.com/storage/pricing#network-pricing)  
 Now there is only Egress from Your Server to User/Datbase and vCPU + RAM time.  
 Egress from Your Server to User/Database is considerably cheap because Your Server only responds status code to User.  
 vCPU + RAM cost is not really expensive because uploading image, video, file,.. doesnot happen very regularly or if happens, basically fast.  
